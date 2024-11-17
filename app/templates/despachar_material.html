@@ -1,0 +1,109 @@
+{%extends 'layout.html'%}
+{%block style%}
+<link rel="stylesheet" href="{{url_for('static',filename='css/despachar_material.css')}}">
+{%endblock%}
+{%block body%}
+{% with messages = get_flashed_messages() %}
+{% if messages%}
+{% for message in messages%}
+<div  >
+    {{message}}
+</div>
+    
+{%endfor%}
+{%endif%}
+{%endwith%}
+<div>
+    <div class="despachar">
+        <h1>Despachar Material</h1>
+        <p>Al desparchar el materia quedar registrado en una base de datos junto con la persona encargada de despachar el material al personal asigndo, asi mismo como la fecha y hora </p>
+        <br><br>
+        <div>
+            <form action="/escanear_codigo/{{id}}" method="post">
+                <select name="Codigo" id="">
+                    {%for material in materiales%}
+                    <option value="{{material.1}}">{{material.0}}</option>
+                    {%endfor%}
+                </select>
+                <label for="">Cantidad</label>
+                <input type="number" name="Cantidad">
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+        <button class="btn" onclick="abrirventana('leercodigo')">
+            leer codigo de barras
+        </button>
+            
+    </div>
+    <button onclick="abrirventana('descargarbarcode')">Generar un codigo de barras</button>
+    <div id="modal-descargarbarcode" class="modal">
+        <span class="close" onclick="cerrarventana('descargarbarcode')">&times;</span>
+        <form action="/generar_codigo_barra/{{id}}" method="post">
+            <select name="opc" id="">
+                {%for barcod in barcode%}
+                <option value="{{barcod.1}}">{{barcod.0}}</option>
+                {%endfor%}
+            </select>
+            <input type="submit" value="generar codigo barra">
+        </form>
+    </div>
+    <div id="modal-leercodigo" class="modal">
+        <span class="close" onclick="cerrarventana('leercodigo')">&times;</span>
+        <video id="video" width="300" height="200" autoplay></video>
+        <button id="capture">Capturar Código de Barras</button>
+    </div>
+    
+    <script>
+        // Acceder a la cámara
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('capture');
+        // Capturar el cuadro cuando el botón es presionado
+        captureButton.addEventListener('click', function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Convertir la imagen a base64 para enviarla al servidor
+            const imageData = canvas.toDataURL('image/png');
+            // Enviar el cuadro al servidor
+            fetch('/leer_codigo_barra/{{id}}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: imageData })
+                
+            })
+            window.location.href="{{url_for('despachar_material',id=id)}}";
+        });
+        
+        function abrirventana(id) {
+            document.getElementById('modal-' + id).style.display = 'flex';
+            
+            if (id=='leercodigo'){
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+            video.srcObject = stream;
+            const mediaRecorder = new MediaRecorder(stream);
+            })
+            .catch(err => {
+            console.error("Error al acceder a la cámara: ", err);
+            });
+            }
+        }
+
+        function cerrarventana(id) {
+        document.getElementById('modal-' + id).style.display = 'none';
+        stream.stop()
+        }
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                mediaRecorder.pause()
+            }
+        }
+    </script>
+
+</div>
+{%endblock%}

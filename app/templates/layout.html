@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOCORROS</title>
+    {%block style%}
+    
+    {%endblock%}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/layout.css')}}">
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="{{url_for('home',id=id)}}"><img style="width: 45%; height: 20%; margin-left: 20%;" src="{{url_for('static', filename='img/logo-cruzroja.jpg')}}"></a>
+        {%if Autorizado == 1%}
+        <a href="{{url_for('surtir_material',id=id)}}">Resurtir Productos</a>
+        {%endif%}
+        <a href="{{url_for('despachar_material',id=id)}}">Despachar Material</a>
+        {%if Autorizado == 1%}       
+        <a href="{{url_for('personal',id=id)}}">Personal</a>
+        <a href="{{url_for('historial_movimiennto',id=id)}}">Historial de moviemiento</a>
+        <a href="{{url_for('material_faltante',id=id)}}">Descargar Material Faltante</a>
+        {%endif%}
+        <a href="{{url_for('logout')}}">Cerrar Sesion</a>
+    </div>
+
+    <span class="openbtn" onclick="openNav()">&#9776;</span>
+    <div class="main-content">
+    {%block body%}
+    
+    {%endblock%}
+    </div>
+    
+<script>
+    function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.querySelector('.main-content').style.marginLeft = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.querySelector('.main-content').style.marginLeft = "0";
+}
+</script>
+</body>
+</html>

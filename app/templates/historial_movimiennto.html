@@ -1,0 +1,41 @@
+{%extends 'layout.html'%}
+{%block style%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/historial_movimiento.css')}}">
+{%endblock%}
+{%block body%}
+<div>
+    <form method="POST" action="{{ url_for('historial_movimiennto',id=id) }}" >
+        <select name="opcion_seleccionada" onchange="this.form.submit()">
+            <option value="">Selecciona una Fecha</option>
+            {%for mes in meses%}
+            <option value="{{mes}}">Mes:{{mes.1}} Año:{{mes.0}}</option>
+            {%endfor%}
+        </select>
+    </form>
+</div>
+<div class="divtable">
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Encargado</th>
+            <th>Material</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for material in historial_material%}
+            <tr>
+                <td>{{material.1}}</td>
+                <td>{{material.0}}</td>
+                <td>{{material.2}}</td>
+                <td>{{material.3}}</td>
+                <td>{{material.4}}</td>
+            </tr>
+        {%endfor%}
+    </tbody>
+</table>
+</div>
+<a class="bn" href="{{url_for('descarga_hist_material',mes=mesActual,anio=anioActual)}}">Descargar</a>
+{%endblock%}

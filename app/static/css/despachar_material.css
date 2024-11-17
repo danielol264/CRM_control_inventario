@@ -1,0 +1,34 @@
+.modal {
+    display: none;
+    /* Oculta la ventana por defecto */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fondo oscuro */
+    justify-content: center;
+    align-items: center;
+}
+.despachar{
+    width: 80%;
+    margin: 0 auto;
+    height: 30%;
+    border-radius: 10px;
+    padding-bottom: 100px;
+    background-color: aqua;
+}
+.despachar h1, .despachar p,.despachar div{
+    width: 80%;
+    margin: 10px auto 40px;
+}
+.despachar h1{
+    padding-top: 10px;
+}
+.btn{
+    width: 20%;
+    margin: 10px 20% 
+}

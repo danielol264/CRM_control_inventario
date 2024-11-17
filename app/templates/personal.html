@@ -1,0 +1,166 @@
+{%extends 'layout.html'%}
+{%block style%}
+
+<link rel="stylesheet" href="{{url_for('static', filename='css/personal.css')}}">
+{%endblock%}
+{%block body%}
+<div>
+    <div class="divtable">
+        <table class="table">
+            <thead>
+                <tr >
+                    <th>Nombre</th>
+                    <th>Cargo</th>
+                    <th>Autorizado</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for persona in personal%}
+                <tr >
+                    <td>{{persona.3}} {{persona.4}} {{persona.5}}</td>
+                    <td>{{persona.6}}</td>
+                    <td>{%if persona.7 == 1%}
+                        <p>Si</p>
+                        {%elif persona.7==0%}
+                        <p>No</p>
+                        {%endif%}
+                    </td>
+                    <td> <form
+                        action="{{url_for('eliminar_persona',id=id,idpersona=persona.0)}}"
+                        method="post" onsubmit="return confirmDeletion()">
+                        <button class=" bn " type="submit">Eliminar </button>
+                     </form>
+                    </td>
+                    <td><button class="bn" onclick="abrirVentana('editarp-{{persona.0}}')">Editar</button>
+                    </td>
+                </tr>
+                <div id="ventana-editarp-{{persona.0}}" class="ventana">
+                    <div class="contenidoe">
+                        <span class="cerrar"  onclick="cerrarVentana('editarp-{{persona.0}}')">&times;</span>
+                        <form action="/editar_persona/{{id}},{{persona.0}}" method="post" enctype="multipart/form-data">
+                            <ul class="lista1">
+                                <li>Nombre</li>
+                                <li>Apellido Paterno</li>
+                                <li>Apellido Materno</li>
+                                <li>Cargo</li>
+                                <li>Usuario</li>
+                                <li>Autorizado</li>
+                            </ul>
+                            <ul class="lista2">
+                                <li><input type="text" name="Nombre" value="{{persona.3}}"></li>
+                                <li><input type="text" name="Apellidop" value="{{persona.4}}"></li>
+                                <li><input type="text" name="Apellidom" value="{{persona.5}}"></li>
+                                <li><input type="text" name="Cargo" value="{{persona.6}}"></li>
+                                <li><input type="text" name="Usuario" value="{{persona.1}}"></li>
+                                <li>{%if persona.7 == 1%}
+                                    <input type="radio" name="Autorizado" id="radio-{{persona.0}}" value="persona.7" checked>
+                                    {%elif persona.7==0%}
+                                    <input type="radio" name="Autorizado" id="radio-{{persona.0}}" value="persona.7">
+                                    {%endif%}
+                                    <a onclick="activarRadio('{{persona.0}}')">Autorizada </a>
+                                    <a onclick="desactivarRadio('{{persona.0}}')">Denegada </a></li>
+                            </ul>
+                            
+                            
+                            
+                            <button class="bn" type="submit">Editar Material</button>
+                        </form>
+                        <button class="bn" onclick="abrirSegundaVentana('cambiarcontra-{{persona.0}}','editarp-{{persona.0}}')">Cambiar Contraseña</button>
+                    </div>
+                </div>
+                <div id="ventana-cambiarcontra-{{persona.0}}" class="ventana">
+                    <div class="contenido">
+                        <span class="cerrar"  onclick="cerrarSegundaVentana('cambiarcontra-{{persona.0}}')">&times;</span>
+                        <form action="/cambiar_contraseña/{{id}},{{persona.0}}" method="post" enctype="multipart/form-data">
+                            <label for="">Contrseña Nueva</label>
+                            <input type="password" name="Contraseña">
+                            <br>
+                            <button type="submit" class="bn" style="width: 250px;" >Cambiar Contraseña</button>
+                        </form>
+                    </div>
+                </div>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+    <button id="CrearPersona" class="btn-agrega-per" onclick="abrirVentana('1')">Crear Persona</button>
+
+    <div class="ventana" id="ventana-1">
+    <div class="contenido">
+        <span class="cerrar" onclick="cerrarVentana('1')">&times;</span>
+        <form action="/agregar_persona/{{id}}" method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><label for="">Nombre</label></td>
+                        <td><input type="text" name="Nombre"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Apellido Paterno</label></td>
+                        <td><input type="text" name="Apellidop"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Apellido Materno</label></td>
+                        <td><input type="text" name="Apellidom"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Cargo</label></td>
+                        <td><input type="text" name="Cargo"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Usuario</label></td>
+                        <td><input type="text" name="Usuario"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Contraseña</label></td>
+                        <td><input type="password" name="Contraseña"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="">Autorizacion a Cambio</label></td>
+                        <td><input type="radio" name="Autorizado" id="radio-0">
+                            <a onclick="activarRadio('0')">Autorizada </a>
+                            <a onclick="desactivarRadio('0')">Denegada </a></li>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br><br>
+            <button type="submit">Crear Persona</button>
+        </form>
+    </div>
+    </div>
+</div>
+<script>
+    function abrirVentana(numero) {
+        document.getElementById('ventana-' + numero).style.display = 'flex';
+    }
+    function cerrarVentana(numero) {
+        document.getElementById('ventana-' + numero).style.display = 'none';
+    }
+    function cerrarSegundaVentana(id) {
+        document.getElementById('ventana-'+id).style.display = 'none';
+        }
+        function abrirSegundaVentana(id,idmodal) {
+        cerrarVentana(idmodal);
+        document.getElementById('ventana-' + id).style.display = 'flex';
+        }
+    window.onclick = function(event) {
+        if (event.target.classList.contains('ventana')) {
+            event.target.style.display = 'none';
+        }
+    }
+    function confirmDeletion() {
+    return confirm("¿Estás seguro de que deseas eliminar este elemento?");
+  }
+  function activarRadio(id) {
+            const radio = document.getElementById('radio-'+id);
+            radio.checked = true;  
+        }
+        function desactivarRadio(id) {
+            const radio = document.getElementById('radio-'+id);
+            radio.checked = false; 
+        }
+    </script>
+{%endblock%}

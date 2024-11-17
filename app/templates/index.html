@@ -1,0 +1,117 @@
+{% extends 'layout.html'%}
+{%block style%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+{%endblock%}
+
+{%block body%}
+{% with messages = get_flashed_messages() %}
+{% if messages%}
+{% for message in messages%}
+<div>
+    {{message}}
+    <a href="/material_faltante/{{id}}">Ver Material Faltante</a>
+</div>
+    
+{%endfor%}
+{%endif%}
+{%endwith%}
+
+<div class="divprincipal">
+    <div>
+        <form action="" method="post">
+            <input type="search" name="busqueda">
+            <button type="submit">🔍</button>
+        </form>
+    </div>
+    <br>
+    {%for material in Materiales%}
+    <div class="material" >
+        <button  onclick="openModal('{{ material.0 }}')" >
+            {% with urlfoto = '/static/img/' %}
+            {% if(material.4 !="") %}
+            <img src="{{ urlfoto }}{{ material.4 }}" style="height: 150px; width: 145px">
+            {% else %}
+            <label  for="">No contiene niguna foto</label>
+            {% endif %}
+            {%endwith%}
+        </button>
+        <h1>{{material.1}}</h1>
+        <br>
+        <p> Cantidad <br>{{material.3}}</p>
+    </div>
+    <div id="modal-{{ material.0 }}" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('{{ material.0 }}')">&times;</span>
+            <div class="lista1">
+                    
+                        <p> {% with urlfoto = '/static/img/' %}
+                            {% if(material.4 !="") %}
+                            <img src="{{ urlfoto }}{{ material.4 }}" style="width: 145px; height: 150;">
+                            {% else %}
+                            <label  for="">No contiene niguna foto</label>
+                            {% endif %}
+                            {%endwith%}</p>        
+                        <p>Cantidad Total</p>
+                        <p>{{material.3}}</p>
+            </div>
+            <div class="lista2">
+                <h1>{{ material.1 }}</h1>
+                <br><br><br>
+                <p>{{material.2}}</p>
+                <br><br><br>
+                <p></p>
+            </div>
+            
+            
+
+        </div>
+    </div>
+
+    {%endfor%}
+    
+
+    
+
+
+
+<script>
+function openModal(id) {
+    document.getElementById('modal-' + id).style.display = 'flex';
+}
+
+function closeModal(id) {
+    document.getElementById('modal-' + id).style.display = 'none';
+}
+
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+}
+</script>
+<script>
+// Obtener elementos del DOM
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+
+// Cuando el usuario hace clic en el botón, se abre la ventana emergente
+btn.onclick = function() {
+    modal.style.display = "flex";
+}
+
+// Cuando el usuario hace clic en la X, se cierra la ventana emergente
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// Cuando el usuario hace clic en cualquier parte fuera de la ventana, se cierra
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+</div>
+{%endblock%}

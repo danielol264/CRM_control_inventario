@@ -1,0 +1,110 @@
+{% extends 'layout.html'%}
+{%block style%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/surtir_material.css')}}">
+{%endblock%}
+{%block body%}
+<div>
+    <form action="" method="post">
+        <input type="search" name="busqueda">
+        <button type="submit">🔍</button>
+    </form>
+    <br>
+    {%for material in Materiales%}
+    <div class="material">
+        <div style="border: 1px solid;">
+            {% with urlfoto = '/static/img/' %}
+            {% if(material.4 !="") %}
+            <img src="{{ urlfoto }}{{ material.4 }}" style="height: 150px; width: 145px">
+            {% else %}
+            <label style="height: 150px; width: 145px;" for="">No contiene niguna foto</label>
+            {% endif %}
+            {%endwith%}
+        </div>
+        <h1>{{material.1}}</h1>
+        <p> Cantidad <br>{{material.3}}</p>
+        <button class="bn" onclick="openModal('{{ material.0 }}')">Resurtir</button>
+    </div>
+    <div id="modal-{{ material.0 }}" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('{{ material.0 }}')">&times;</span>
+            <form action="/resurtir_material/{{id}},{{material.0}}" method="post">
+                <h1>{{material.1}}</h1>
+                <p>Al resurtir material se vera reflejado en un registro de control del material </p>
+                <input type="number" name="resurtir" id="">
+                <button class="bn" type="submit">Resurtir</button>
+            </form>
+            <button class="bn editar" onclick="openSecondModal('editarm-{{material.0}}','{{material.0}}')">Editar</button>
+        </div>
+    </div>
+    <div id="second-modal-editarm-{{material.0}}" class="modal">
+        <div class="modal-content">
+            <span class="close"  onclick="closeSecondModal('second-modal-editarm-{{material.0}}')">&times;</span>
+            <form action="/Editar_Material/{{id}},{{material.0}}" method="post" enctype="multipart/form-data">
+                <ul class="lista1">
+                    <li>Nombre</li>
+                    <li>Descripcion</li>
+                    <li>Cantidad</li>
+                    <li>Foto</li>
+                </ul>
+                <ul class="lista2">
+                    <li><input type="text" name="Nombre" value="{{material.1}}"></li>
+                    <li><input type="text" name="Descripcion" value="{{material.2}}"></li>
+                    <li><input type="text" name="Cantidad" value="{{material.3}}"></li>
+                    <li><input type="file" name="foto" accept="image/*" value="{{material.4}}"></li>
+                </ul>
+                <button class="bn" type="submit">Editar Material</button>
+            </form>
+        </div>
+    </div>
+    {%endfor%}
+    <br>
+    <button class="bn" onclick="openModal('agregarm')">Agregar Material</button>
+    <div id="modal-agregarm" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('agregarm')">&times;</span>
+            <form action="/Crear_Material/{{id}}" method="post" enctype="multipart/form-data">
+                <ul class="lista1">
+                    <li>Nombre</li>
+                    <li>Descripcion</li>
+                    <li>Cantidad</li>
+                    <li>Foto</li>
+                </ul>
+                <ul class="lista2">
+                    <li><input type="text" name="Nombre"></li>
+                    <li><input type="text" name="Descripcion"></li>
+                    <li><input type="text" name="Cantidad"></li>
+                    <li><input type="file" name="Foto" accept="image/*"></li>
+                </ul>
+                <button class="bn" type="submit">Editar Material</button>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        function openModal(id) {
+            document.getElementById('modal-' + id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+        document.getElementById('modal-' + id).style.display = 'none';
+        }
+        function closeSecondModal(id) {
+        document.getElementById(id).style.display = 'none';
+        }
+        function openSecondModal(id,idmodal) {
+        closeModal(idmodal);
+        document.getElementById('second-modal-' + id).style.display = 'flex';
+        }
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+
+</div>
+{%endblock%}
